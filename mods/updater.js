@@ -11,7 +11,7 @@ if (window.h5vcc && window.h5vcc.tizentube) {
         return fetch('https://api.github.com/repos/daivietpda/TizenTubeCobalt/releases/latest')
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('Phản hồi của mạng không ổn');
                 }
                 return response.json();
             });
@@ -32,12 +32,12 @@ if (window.h5vcc && window.h5vcc.tizentube) {
                     console.info(`New version available: ${latestVersion} (current: ${currentAppVersion})`);
                     showModal(
                         {
-                            title: 'Update Available',
-                            subtitle: `A new version of TizenTube Cobalt is available: ${latestVersion}\nCurrent version: ${currentAppVersion}\nRelease Date: ${new Date(releaseDate * 1000).toLocaleString()}\nRelease Notes:\n${release.body}`,
+                            title: 'Cập nhật có sẵn',
+                            subtitle: `Phiên bản mới của TizenTube Cobalt đã có sẵn: ${latestVersion}\nPhiên bản hiện tại: ${currentAppVersion}\nNgày phát hành: ${new Date(releaseDate * 1000).toLocaleString()}\nGhi chú phát hành:\n${release.body}`,
                         },
                         [
                             buttonItem(
-                                { title: 'Update Now', subtitle: 'Click to download the latest version.' },
+                                { title: 'Cập nhật ngay', subtitle: 'Nhấp để tải xuống phiên bản mới nhất.' },
                                 { icon: 'DOWN_ARROW' },
                                 [
                                     {
@@ -54,7 +54,7 @@ if (window.h5vcc && window.h5vcc.tizentube) {
                                 ]
                             ),
                             buttonItem(
-                                { title: 'Remind Me Later', subtitle: 'Check for updates later.' },
+                                { title: 'Nhắc tôi sau', subtitle: 'Kiểm tra cập nhật sau.' },
                                 { icon: 'SEARCH_HISTORY' },
                                 [
                                     {
@@ -75,12 +75,12 @@ if (window.h5vcc && window.h5vcc.tizentube) {
                         'tt-update-modal'
                     )
                 } else {
-                    console.info('You are using the latest version of TizenTube.');
+                    console.info('Bạn đang sử dụng phiên bản mới nhất của TizenTube.');
                 }
             })
             .catch(error => {
-                console.error('Error fetching the latest release:', error);
-                showToast('TizenTube Update Check Failed', 'Could not check for updates.', null);
+                console.error('Lỗi khi tải bản phát hành mới nhất:', error);
+                showToast('TizenTube Kiểm tra cập nhật không thành công', 'Không thể kiểm tra cập nhật.', null);
             });
     }
 }
