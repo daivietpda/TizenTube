@@ -29,48 +29,57 @@ if (window.h5vcc && window.h5vcc.tizentube) {
                 const releaseDate = new Date(release.published_at).getTime() / 1000;
 
                 if (latestVersion !== currentAppVersion) {
-                    console.info(`New version available: ${latestVersion} (current: ${currentAppVersion})`);
+                    console.info(`Phiên bản mới có sẵn: ${latestVersion} (Hiện tại: ${currentAppVersion})`);
+
+                    // Create buttons for each asset
+                    const assetButtons = release.assets.map(asset => {
+                        return buttonItem(
+                            { title: asset.name, subtitle: `Kích thước: ${(asset.size / (1024 * 1024)).toFixed(2)} MB` },
+                            { icon: 'DOWN_ARROW' },
+                            [
+                                {
+                                    customAction: {
+                                        action: 'UPDATE_DOWNLOAD',
+                                        parameters: asset.browser_download_url
+                                    }
+                                },
+                                {
+                                    signalAction: {
+                                        signal: 'POPUP_BACK'
+                                    }
+                                }
+                            ]
+                        );
+                    });
+
+                    // Add "Remind me later" button
+                    assetButtons.push(
+                        buttonItem(
+                            { title: 'Nhắc tôi sau', subtitle: 'Kiểm tra cập nhật sau.' },
+                            { icon: 'SEARCH_HISTORY' },
+                            [
+                                {
+                                    customAction: {
+                                        action: 'UPDATE_REMIND_LATER',
+                                        parameters: currentEpoch + 86400
+                                    }
+                                },
+                                {
+                                    signalAction: {
+                                        signal: 'POPUP_BACK'
+                                    }
+                                }
+                            ]
+                        )
+                    );
+
+
                     showModal(
                         {
                             title: 'Cập nhật có sẵn',
-                            subtitle: `Phiên bản mới của TizenTube Cobalt đã có sẵn: ${latestVersion}\nPhiên bản hiện tại: ${currentAppVersion}\nNgày phát hành: ${new Date(releaseDate * 1000).toLocaleString()}\nGhi chú phát hành:\n${release.body}`,
+                            subtitle: `Phiên bản mới của TizenTube Cobalt đã có sẵn: ${latestVersion}\nPhiên bản hiện tại: ${currentAppVersion}\nNgày phát hành: ${new Date(releaseDate * 1000).toLocaleString()}\nGhi chú phát hành:\n${release.body}\n\nVui lòng chọn file để tải xuống:`
                         },
-                        [
-                            buttonItem(
-                                { title: 'Cập nhật ngay', subtitle: 'Nhấp để tải xuống phiên bản mới nhất.' },
-                                { icon: 'DOWN_ARROW' },
-                                [
-                                    {
-                                        customAction: {
-                                            action: 'UPDATE_DOWNLOAD',
-                                            parameters: release.assets[0].browser_download_url
-                                        }
-                                    },
-                                    {
-                                        signalAction: {
-                                            signal: 'POPUP_BACK'
-                                        }
-                                    }
-                                ]
-                            ),
-                            buttonItem(
-                                { title: 'Nhắc tôi sau', subtitle: 'Kiểm tra cập nhật sau.' },
-                                { icon: 'SEARCH_HISTORY' },
-                                [
-                                    {
-                                        customAction: {
-                                            action: 'UPDATE_REMIND_LATER',
-                                            parameters: currentEpoch + 86400
-                                        }
-                                    },
-                                    {
-                                        signalAction: {
-                                            signal: 'POPUP_BACK'
-                                        }
-                                    }
-                                ]
-                            )
-                        ],
+                        assetButtons, // Pass the array of asset buttons
                         0,
                         'tt-update-modal'
                     )
