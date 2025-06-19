@@ -8,7 +8,7 @@ if (window.h5vcc && window.h5vcc.tizentube) {
     const currentAppVersion = window.h5vcc.tizentube.GetVersion();
 
     function getLatestRelease() {
-        return fetch('https://api.github.com/repos/reisxd/TizenTubeCobalt/releases/latest')
+        return fetch('https://api.github.com/repos/daivietpda/TizenTubeCobalt/releases/latest')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
