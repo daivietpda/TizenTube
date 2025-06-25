@@ -167,6 +167,16 @@ class SponsorBlockHandler {
     const videoDuration = this.video.duration;
 
     this.segmentsoverlay = document.createElement('div');
+    this.segmentsoverlay.classList.add('ytLrProgressBarHost', 'ytLrProgressBarFocused', 'ytLrWatchDefaultProgressBar');
+    const sliderElement = document.createElement('div');
+    sliderElement.style.setProperty('background-color', 'rgb(0, 0, 0, 0)');
+    sliderElement.style.setProperty('bottom', 'auto', 'important');
+    sliderElement.style.setProperty('height', '0.25rem', 'important');
+    sliderElement.style.setProperty('overflow', 'hidden', 'important');
+    sliderElement.style.setProperty('position', 'absolute', 'important');
+    sliderElement.style.setProperty('top', '1.625rem', 'important');
+    sliderElement.style.setProperty('width', '100%', 'important');
+    this.segmentsoverlay.appendChild(sliderElement);
     this.segments.forEach((segment) => {
       const [start, end] = segment.segment;
       const barType = barTypes[segment.category] || {
@@ -176,12 +186,16 @@ class SponsorBlockHandler {
       const transform = `translateX(${(start / videoDuration) * 100.0
         }%) scaleX(${(end - start) / videoDuration})`;
       const elm = document.createElement('div');
-      elm.classList.add('ytlr-progress-bar__played');
-      elm.style['background'] = barType.color;
-      elm.style['opacity'] = barType.opacity;
-      elm.style['-webkit-transform'] = transform;
+      elm.style.setProperty('background', barType.color, 'important');
+      elm.style.setProperty('opacity', barType.opacity, 'important');
+      elm.style.setProperty('transform', transform, 'important');
+      elm.style.setProperty('height', '100%');
+      elm.style.setProperty('pointer-events', 'none');
+      elm.style.setProperty('position', 'absolute');
+      elm.style.setProperty('transform-origin', 'left');
+      elm.style.setProperty('width', '100%');
       console.info('Generated element', elm, 'from', segment, transform);
-      this.segmentsoverlay.appendChild(elm);
+      sliderElement.appendChild(elm);
     });
 
     this.observer = new MutationObserver((mutations) => {
@@ -194,16 +208,23 @@ class SponsorBlockHandler {
             }
           }
         }
+
+        if (document.querySelector('ytlr-progress-bar').getAttribute('hybridnavfocusable') === 'false') {
+          this.segmentsoverlay.classList.remove('ytLrProgressBarFocused');
+        } else {
+          this.segmentsoverlay.classList.add('ytLrProgressBarFocused');
+        }
       });
     });
 
     this.sliderInterval = setInterval(() => {
-      this.slider = document.querySelector('.ytlr-progress-bar__slider');
+      this.slider = document.querySelector('ytlr-redux-connect-ytlr-progress-bar');
       if (this.slider) {
         clearInterval(this.sliderInterval);
         this.sliderInterval = null;
         this.observer.observe(this.slider, {
-          childList: true
+          childList: true,
+          subtree: true
         });
         this.slider.appendChild(this.segmentsoverlay);
       }
