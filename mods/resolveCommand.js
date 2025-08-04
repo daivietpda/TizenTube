@@ -1,7 +1,7 @@
 import { configWrite, configRead } from './config.js';
-import modernUI, { optionShow } from './modernUI.js';
-import { speedSettings } from './speedUI.js';
-import { showToast } from './ytUI.js';
+import modernUI, { optionShow } from './ui/settings.js';
+import { speedSettings } from './ui/speedUI.js';
+import { showToast } from './ui/ytUI.js';
 
 export default function resolveCommand(cmd, _) {
     // resolveCommand function is pretty OP, it can do from opening modals, changing client settings and way more.
@@ -47,6 +47,17 @@ export function patchResolveCommand() {
                                     configWrite(setting.clientSettingEnum.item, arr);
                                 } else configWrite(setting.clientSettingEnum.item, value);
                             }
+                        } else if (settings.clientSettingEnum.item === 'I18N_LANGUAGE') {
+                            const lang = settings.stringValue;
+                            const date = new Date();
+                            date.setFullYear(date.getFullYear() + 10);
+                            document.cookie = `PREF=hl=${lang}; expires=${date.toUTCString()};`;
+                            resolveCommand({
+                                signalAction: {
+                                    signal: 'RELOAD_PAGE'
+                                }
+                            });
+                            return true;
                         }
                     }
                 } else if (cmd.customAction) {
