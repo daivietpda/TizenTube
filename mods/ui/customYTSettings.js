@@ -10,7 +10,7 @@ function PatchSettings(settingsObject) {
                 parameters: []
             }
         },
-        'Open TizenTube Settings',
+        'Cài đặt TizenTube',
         'https://www.gstatic.com/ytlr/img/parent_code.png'
     )
 
